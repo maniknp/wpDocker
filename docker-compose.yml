@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  wordpress:
+    build: .
+    volumes:
+      - ./wp-content:/var/www/html/wp-content
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: password
+      WORDPRESS_DB_NAME: wordpress
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:latest
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./db/backup.db:/docker-entrypoint-initdb.d/backup.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: wordpress
+
+volumes:
+  db_data:
